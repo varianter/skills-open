@@ -1,0 +1,10 @@
+{
+  "name": "@variant/plugin-handbook",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node -e \"console.log('No build step for skill-only plugin handbook')\"",
+    "typecheck": "node -e \"console.log('No typecheck step for skill-only plugin handbook')\""
+  }
+}

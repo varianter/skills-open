@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "handbook",
+  "version": "0.1.0",
+  "description": "Skills for getting full information from Variant's Handbook.",
+  "skills": ["./skills"],
+  "license": "MIT",
+  "homepage": "https://handbook.variant.no",
+  "repository": "https://github.com/varianter/variant-skills"
+}

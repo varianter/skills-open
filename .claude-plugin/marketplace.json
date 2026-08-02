@@ -26,6 +26,16 @@
           "url": "https://your-mcp-server.example.com/mcp"
         }
       }
+    },
+    {
+      "name": "handbook",
+      "displayName": "Handbook",
+      "source": "./handbook",
+      "version": "0.1.0",
+      "description": "Skills for getting full information from Variant's Handbook.",
+      "license": "MIT",
+      "homepage": "https://handbook.variant.no",
+      "repository": "https://github.com/varianter/variant-skills"
     }
   ]
 }
