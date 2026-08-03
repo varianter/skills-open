@@ -1,76 +1,27 @@
 # plugin-marketplace-template
 
-A multi-plugin workspace for building [Claude Code](https://claude.ai/claude-code) plugins with skills, MCP tools, and an OAuth-protected HTTP server, ready to deploy to any cloud.
+> This repo is based on the [Variant Claude plugin marketplace template](https://github.com/varianter/plugin-marketplace-template).
 
 ## Use skills from this template
 
-You can use skills from plugins in this repo by connecting marketplace to Claude, or adding the skills specifically:
+Use skills from plugins in this repo by connecting marketplace to Claude, or adding the skills specifically:
 
 ```
-npx skills add varianter/plugin-marketplace-template
+npx skills add varianter/skills-open
 
 # list all
-npx skills add varianter/plugin-marketplace-template --list
+npx skills add varianter/skills-open --list
 ```
 
 Keep in mind that if you add a skill that refers to MCP tools outside of Claude marketplace, you would have to connect to MCP server manually.
 
-## What's included
+## Plugins in this repo
 
-- **`@variant/mcp-server`** — npm package for shared MCP infrastructure: Express server, OAuth/OIDC auth, session management, widget support
-- **`plugins/standard`** — starter plugin with a `whoami` tool and `example` skill
-- **Build and validation scripts** — typecheck, lint, skill validator, widget bundler
+- **`plugins/handbook`** — Get information from Variant Handbook.
 
-## Getting started
+## Contributing
 
-```bash
-git clone https://github.com/varianter/plugin-marketplace-template
-cd plugin-marketplace-template
-cp .env.example .env          # fill in your auth credentials and config
-pnpm install
-```
-
-Then update `plugins/standard/mcp-server.config.json` with runtime configurations. See below for details.
-
-Run a plugin's MCP server locally:
-
-```bash
-pnpm dev standard             # hot-reload server + widget watcher
-pnpm dev                      # choose from available plugins
-pnpm dev:server standard      # server only — faster when not touching widgets
-```
-
-When having multiple plugins, you can run
-```bash
-pnpm dev <plugin>             # hot-reload server + widget watcher
-pnpm dev:server <plugin>      # server only — faster when not touching widgets
-```
-
-Then update `plugins/standard/.claude-plugin/plugin.json` with your MCP server URL once deployed.
-
-## Configuration MCP
-
-Runtime defaults live in [`plugins/standard/mcp-server.config.json`](plugins/standard/mcp-server.config.json) — the file is found by walking up from the server process's working directory, so keep it at the plugin root. Environment variables override these values at runtime. 
-See docs and readme at [`@variant/mcp-server`](https://github.com/varianter/mcp-server) for complete configuration.
-
-## Project structure
-
-```
-plugins/
-  standard/          ← starter plugin (copy this to add a new plugin)
-    .claude-plugin/
-      plugin.json    ← plugin manifest (skills paths, MCP server URL)
-    mcp-server.config.json ← committed runtime defaults for this plugin's MCP server
-    skills/          ← skills; each skill may optionally contain a tools/ directory for colocated tools
-    skills/*/tools   ← MCP tools colocated with a skill (optional)
-    tools/           ← standalone MCP tools (not tied to a skill)
-    mcp-server/      ← deployable MCP HTTP server for this plugin
-.claude-plugin/
-  marketplace.json   ← repo-level manifest listing all plugins
-scripts/             ← skill validator and packaging tools
-```
-
-## Adding a skill
+### Adding a skill
 
 Create `plugins/standard/skills/<name>/SKILL.md`. If the skill needs MCP tools, add them under `plugins/standard/skills/<name>/tools/`:
 
@@ -89,7 +40,7 @@ Validate it:
 pnpm validate-skill plugins/standard/skills/my-skill
 ```
 
-## Adding an MCP tool
+### Adding an MCP tool
 
 Create `plugins/standard/tools/<name>/<toolName>.ts` with an explicit registrar:
 
@@ -119,7 +70,7 @@ For skill-colocated tools (tools under a skill's `tools/` directory) see [`AGENT
 
 Note: You can also use the `create-plugin-skill` skill in `.agents/skills/create-plugin-skill/SKILL.md` to generate a new skill directory with the correct structure.
 
-## Adding a new plugin
+### Adding a new plugin
 
 1. Copy `plugins/standard/` to `plugins/<name>/`
 2. Update `plugins/<name>/.claude-plugin/plugin.json` and `plugins/<name>/package.json`
@@ -129,7 +80,7 @@ Note: You can also use the `create-plugin-skill` skill in `.agents/skills/create
 
 Note: You can also use the `create-plugin` skill in `.agents/skills/create-plugin/SKILL.md` to generate a new plugin directory with the correct structure.
 
-## Development commands
+### Development commands
 
 From the **repo root**:
 
