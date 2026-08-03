@@ -4,7 +4,17 @@
 
 ## Use skills from this template
 
-Use skills from plugins in this repo by connecting marketplace to Claude, or adding the skills specifically:
+Use skills from plugins in this repo by connecting marketplace to Claude Code:
+
+```
+/plugin marketplace add varianter/skills-open
+
+# Installing everything from the Handbook plugin
+/plugin install handbook@variant-skills
+```
+
+
+Or adding the skills specifically:
 
 ```
 npx skills add varianter/skills-open

@@ -1,35 +1,19 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "example-marketplace",
+  "name": "variant-skills",
   "version": "0.1.0",
-  "description": "Example Claude Code plugin marketplace data",
+  "description": "Collection of open tools and skills from Variant",
   "owner": {
-    "name": "Example Organization",
-    "url": "https://example.com"
+    "name": "Variant",
+    "url": "https://variant.no"
   },
   "metadata": {
     "pluginRoot": "./plugins"
   },
   "plugins": [
     {
-      "name": "plugin-marketplace-template",
-      "displayName": "Plugin Marketplace Template",
-      "source": "./standard",
-      "version": "0.1.0",
-      "description": "Claude Code plugin template — skills, MCP tools, and deployment workflows",
-      "license": "MIT",
-      "homepage": "https://github.com/varianter/plugin-marketplace-template",
-      "repository": "https://github.com/varianter/plugin-marketplace-template",
-      "mcpServers": {
-        "plugin-mcp": {
-          "type": "http",
-          "url": "https://your-mcp-server.example.com/mcp"
-        }
-      }
-    },
-    {
       "name": "handbook",
-      "displayName": "Handbook",
+      "displayName": "Variant Handbook",
       "source": "./handbook",
       "version": "0.1.0",
       "description": "Skills for getting full information from Variant's Handbook.",

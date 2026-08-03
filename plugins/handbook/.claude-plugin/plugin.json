@@ -1,6 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "handbook",
+  "displayName": "Variant Handbook",
   "version": "0.1.0",
   "description": "Skills for getting full information from Variant's Handbook.",
   "skills": ["./skills"],
