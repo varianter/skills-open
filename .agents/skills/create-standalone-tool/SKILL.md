@@ -2,6 +2,7 @@
 name: create-standalone-tool
 description: Add a standalone MCP tool to a chosen plugin using baked-in template best practices and current repository conventions.
 allowed-tools: Read, Bash, Edit, Write
+disable-model-invocation: true
 ---
 
 # Create Standalone Tool

@@ -2,6 +2,7 @@
 name: create-skill-with-colocated-widget
 description: Add a skill with a colocated Svelte widget MCP tool, README documentation, path-safe widget metadata, and registration.
 allowed-tools: Read, Bash, Edit, Write
+disable-model-invocation: true
 ---
 
 # Create Skill With Colocated Widget

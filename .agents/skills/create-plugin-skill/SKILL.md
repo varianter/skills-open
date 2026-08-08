@@ -2,6 +2,7 @@
 name: create-plugin-skill
 description: Add a plain skill-only SKILL.md under a plugin using template best practices and current repository conventions.
 allowed-tools: Read, Bash, Edit, Write
+disable-model-invocation: true
 ---
 
 # Create Plugin Skill

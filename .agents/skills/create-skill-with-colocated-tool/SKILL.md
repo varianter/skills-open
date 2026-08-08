@@ -2,6 +2,7 @@
 name: create-skill-with-colocated-tool
 description: Add a skill with a colocated MCP tool, README documentation, and registration using template best practices.
 allowed-tools: Read, Bash, Edit, Write
+disable-model-invocation: true
 ---
 
 # Create Skill With Colocated Tool

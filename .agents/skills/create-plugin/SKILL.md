@@ -2,6 +2,7 @@
 name: create-plugin
 description: Create a new plugin from baked-in template repository best practices without depending on an existing example plugin.
 allowed-tools: Read, Bash, Edit, Write
+disable-model-invocation: true
 ---
 
 # Create Plugin
