@@ -20,6 +20,16 @@
       "license": "MIT",
       "homepage": "https://handbook.variant.no",
       "repository": "https://github.com/varianter/variant-skills"
+    },
+    {
+      "name": "code",
+      "displayName": "Variant Code Skills",
+      "source": "./code",
+      "version": "0.1.0",
+      "description": "Skills for working with code as used by various Variant consultants",
+      "license": "MIT",
+      "homepage": "https://github.com/varianter",
+      "repository": "https://github.com/varianter/variant-skills"
     }
   ]
 }

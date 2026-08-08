@@ -14,6 +14,8 @@ const ALLOWED_PROPERTIES = new Set([
   'allowed-tools',
   'metadata',
   'compatibility',
+  'argument-hint',
+  'disable-model-invocation',
 ]);
 
 const KEBAB_REGEX = /^[a-z0-9-]+$/;
