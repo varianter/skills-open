@@ -3,9 +3,7 @@
   "name": "code",
   "displayName": "Variant Code Skills",
   "version": "0.1.0",
-  "skills": [
-    "./skills"
-  ],
+  "skills": ["./skills"],
   "description": "Skills for working with code as used by various Variant consultants",
   "license": "MIT",
   "homepage": "https://github.com/varianter",
