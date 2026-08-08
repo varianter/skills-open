@@ -32,10 +32,6 @@ npx skills add varianter/skills-open --list
 
 Keep in mind that if you add a skill that refers to MCP tools outside of Claude marketplace, you would have to connect to MCP server manually.
 
-## Plugins in this repo
-
-- **`plugins/handbook`** — Get information from Variant Handbook.
-
 ## Contributing
 
 ### Adding a skill
