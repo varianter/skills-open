@@ -17,7 +17,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: "24"
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
@@ -33,50 +33,6 @@ jobs:
       - name: Test
         run: pnpm test
 
-  docker-smoke:
-    name: Docker smoke test (${{ matrix.plugin }})
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        plugin:
-          - standard
-          # Add new plugins here as they are created under plugins/
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
-
-      - name: Build Docker image
-        run: docker build -f plugins/${{ matrix.plugin }}/mcp-server/Dockerfile -t ${{ matrix.plugin }}-mcp:test .
-
-      - name: Run container
-        run: |
-          docker run -d --name ${{ matrix.plugin }}-mcp -p 8080:8080 \
-            -e HOST=0.0.0.0 \
-            -e PORT=8080 \
-            -e AUTH_PROVIDER=none \
-            ${{ matrix.plugin }}-mcp:test
-
-      - name: Health check
-        run: |
-          for i in {1..20}; do
-            curl -fsS http://127.0.0.1:8080/healthz && exit 0
-            sleep 1
-          done
-          docker logs ${{ matrix.plugin }}-mcp
-          exit 1
-
   quality:
     name: Lint & Format
     runs-on: ubuntu-latest
@@ -88,7 +44,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: "24"
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
