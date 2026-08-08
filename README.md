@@ -1,6 +1,13 @@
-# plugin-marketplace-template
+# Variant Open Skills
 
 > This repo is based on the [Variant Claude plugin marketplace template](https://github.com/varianter/plugin-marketplace-template).
+
+Collection of different skills and tools that some consultants in Variant have found useful.
+
+Contains plugins:
+
+- [Handbook](plugins/handbook) - Get information from Variant Handbook. Get information on everything from gadget budget to sick days.
+- [Code](plugins/code) - Various skills for code projects. Like reviewing, learning new things, specing tasks etc. Work in progress.
 
 ## Use skills from this template
 
