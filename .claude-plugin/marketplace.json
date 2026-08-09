@@ -7,14 +7,11 @@
     "name": "Variant",
     "url": "https://variant.no"
   },
-  "metadata": {
-    "pluginRoot": "./plugins"
-  },
   "plugins": [
     {
       "name": "handbook",
       "displayName": "Variant Handbook",
-      "source": "./handbook",
+      "source": "./plugins/handbook",
       "version": "0.1.0",
       "description": "Skills for getting full information from Variant's Handbook.",
       "license": "MIT",
@@ -24,7 +21,7 @@
     {
       "name": "code",
       "displayName": "Variant Code Skills",
-      "source": "./code",
+      "source": "./plugins/code",
       "version": "0.1.0",
       "description": "Skills for working with code as used by various Variant consultants",
       "license": "MIT",
