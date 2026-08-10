@@ -23,7 +23,39 @@ A topic is a technology, technique, API, library, or pattern the diff *uses* —
 
 For example, a PR that adds ASP.NET's `AuthorizationPolicy` for endpoint authorization, and a Swagger/Swashbuckle operation filter to surface those policies in the generated API docs, has two topics: `AuthorizationPolicy` and Swagger operation-filter metadata. It does not have a topic called "permissions" or "access control" — that's the domain the code happens to serve, and teaching it would explain the wrong thing. A lesson on `AuthorizationPolicy` should deep-dive into how the ASP.NET authorization pipeline actually evaluates policies, not into the company's permission model.
 
-This is the filter for everything downstream: `MISSION.md`'s Focus, `GLOSSARY.md`'s terms, `RESOURCES.md`'s sources, and every lesson should all be scoped to the mechanisms the diff exercises, not the problem it solves.
+This is the filter for everything downstream: `MISSION.md`'s Focus, `GLOSSARY.md`'s terms, `RESOURCES.md`'s sources, and every lesson should all be scoped to the mechanisms the diff exercises, not the problem it solves. This skill teaches **only** technology and technique — it must never produce a lesson about a business decision, domain rule, or product rationale, no matter how central that decision is to the PR.
+
+### Categories that count as a topic
+
+If the diff uses one of these, it's fair game — regardless of the business problem it happens to serve:
+
+1. **Language/runtime features** — a language construct or runtime mechanism the diff exercises (source generators, discriminated unions, context managers, a new language-version feature).
+2. **Libraries, frameworks, and their APIs** — a specific class/module/API/hook the diff calls into (`AuthorizationPolicy`, React's `useTransition`, `IOperationFilter`, a new package and the interface it exposes).
+3. **Architectural patterns** — a structural pattern introduced or extended (CQRS, event sourcing, ports-and-adapters, a new module/layering boundary).
+4. **Design patterns** — an implementation pattern in the code (strategy, decorator, builder, DI wiring, a new middleware/pipeline stage).
+5. **Testing practices** — a testing technique or tool the diff adds (snapshot testing, property-based testing, a new test-double approach, contract tests).
+6. **Build/tooling practices** — how code is built, linted, bundled, or generated (a bundler config change, a codegen step, a new lint rule and its rationale).
+7. **Infra/deployment patterns** — how the change is deployed or operated (a Terraform module, a Kubernetes manifest change, canary rollout mechanics, a CI pipeline stage).
+8. **Protocols/data formats** — a wire protocol or serialization/schema mechanism (gRPC, a GraphQL resolver, JSON Schema validation, an event schema/versioning scheme).
+9. **Security mechanisms as technique** — the mechanics of a control (how OAuth2 PKCE works, how JWT signatures are validated, how a CSRF token is generated/checked) — the mechanism, never the policy it enforces.
+10. **Concurrency/performance techniques** — a caching layer's invalidation strategy, an async/parallelism primitive, a rate-limiting algorithm's implementation.
+
+This list is illustrative, not exhaustive — anything that answers "how does this code do what it does" counts even if it doesn't fit a category above.
+
+### What does not count
+
+- **The business domain/feature the code serves** — "access control," "billing," "inventory management." Describes what the software is *for*, not how it works.
+- **Business rules encoded in the change** — "orders over $500 need approval," "trial users get 3 exports." Domain policy, not mechanism, even when it lives in the diff.
+- **Product/UX rationale** — why a feature exists, what problem it solves. Belongs only in Mission's framing prose, never in a lesson.
+- **Domain vocabulary/entity names** invented for this business — unless the diff also introduces a new *code mechanism* to represent them, in which case the mechanism, not the vocabulary, is the topic.
+- **Configuration values with no mechanism behind them** — a changed flag default, a tuned timeout, changed copy — unless the diff also changes the mechanism reading them.
+
+### The two-question test
+
+Before adding anything to Focus, the Glossary, Resources, or a lesson plan, ask both:
+
+1. "How does this code do what it does?" — names something from the checklist above → it's a topic.
+2. "What is this code for?" — names a business capability → it is **not** a topic, even if it feels important. Mention it, if at all, only in Mission's framing sentence.
 
 ## Teaching Workspace
 
@@ -31,14 +63,17 @@ Treat `./.teach-pr/<pr-number-or-branch>/`, resolved against the root of the rep
 
 The state of their learning is captured in this directory in several files:
 
-- `MISSION.md`: A document capturing _what this PR changes and why it's worth learning_. Auto-drafted from the diff and PR metadata (see [The Mission](#the-mission)), then confirmed with the user. Use the format in [MISSION-FORMAT.md](./MISSION-FORMAT.md). Every time it's created or edited, regenerate `MISSION.html` — see [Rendering Mission and Glossary](#rendering-mission-and-glossary) — since that's what lessons link to.
-- `GLOSSARY.md`: The canonical terms for this PR's subject matter, adhered to in every lesson and learning record. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md). Every time it's created or edited, regenerate `GLOSSARY.html` — see [Rendering Mission and Glossary](#rendering-mission-and-glossary) — since that's what lessons link to.
-- `./reference/*.html`: A directory of reference materials. These are the compressed learnings from the lessons - cheat sheets, reference algorithms, syntax. They are the raw units of learning. They should be beautiful documents which print out well, and are designed for quick reference.
+- `MISSION.md`: A document capturing _what this PR changes and why it's worth learning_. Auto-drafted from the diff and PR metadata (see [The Mission](#the-mission)), then confirmed with the user. Use the format in [MISSION-FORMAT.md](./MISSION-FORMAT.md).
+- `GLOSSARY.md`: The canonical terms for this PR's subject matter, adhered to in every lesson and learning record. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
 - `RESOURCES.md`: A list of resources which can be explored to ground your teaching in contextual knowledge, or to acquire knowledge and wisdom. Use the format in [RESOURCES-FORMAT.md](./RESOURCES-FORMAT.md).
 - `./learning-records/*.md`: A directory of learning records, which capture what the user has learned. These are loosely equivalent to architectural decision records in software development - they capture non-obvious lessons and key insights that may need to be revised later, or drive future sessions. These should be used to calculate the zone of proximal development. They are titled `0001-<dash-case-name>.md`, where the number increments each time. Use the format in [LEARNING-RECORD-FORMAT.md](./LEARNING-RECORD-FORMAT.md).
-- `./lessons/*.html`: A directory of lessons. A **lesson** is a single, self-contained HTML output that teaches one tightly-scoped thing tied to the mission. This is the primary unit of teaching in this workspace.
-- `./assets/*`: Reusable **components** shared across lessons. See [Assets](#assets).
 - `NOTES.md`: A scratchpad for you to jot down user preferences, working notes, and the last-diffed commit range (see [Detecting Drift](#detecting-drift)).
+- `./site/`: The rendered documentation site for this workspace — a Varde-styled, multi-page site generated entirely by the `varde-docs` skill (see [Building the Site](#building-the-site)). **Never hand-write HTML into this directory** — it is regenerated in full each time. It contains:
+  - `index.html`: the rendered Mission page (the site's entry point).
+  - `glossary.html`: the rendered Glossary page.
+  - `./lessons/*.html`: one file per lesson, titled `0001-<dash-case-name>.html` where the number increments each time. A **lesson** is the primary unit of teaching in this workspace — one tightly-scoped thing tied to the mission.
+  - `./reference/*.html`: compressed reference materials — cheat sheets, reference algorithms, syntax — designed for quick reference, sharing the same shell/typography as lessons but not listed in the sidebar (see [Reference Documents](#reference-documents)).
+  - `./site/assets/*`: the one part of `./site/` `varde-docs` must never touch — hand-authored interactive behavior only. See [Assets](#assets).
 
 Tell the user once, the first time you create this directory, that they should add `.teach-pr/` to their `.gitignore`. Don't edit the file yourself — it's their repo, not the workspace's.
 
@@ -59,6 +94,8 @@ Missions may change as the user develops more skills and knowledge, or as the PR
 ## Detecting Drift
 
 Record the commit SHA (or commit range) you diffed against in `NOTES.md`. At the start of a later session, re-check it against the PR/branch's current state. If there are new commits since that SHA, tell the user and offer to extend the mission and add lessons for the new delta — don't silently keep teaching from a diff that's now stale. Generate every lesson the delta needs in one pass, the same way as [initial lesson generation](#lessons), and check the delta's topics against [prior lessons](#reusing-prior-lessons) before writing anything new.
+
+After the delta's lessons are drafted, [build the site](#building-the-site) again — but supply the **complete** lesson set (every previously-generated lesson, unchanged, plus the new delta lessons), never just the delta. `varde-docs` has no incremental-update mode and keeps an identical sidebar across every page, so adding even one lesson means every existing page's nav must be rewritten too.
 
 ## Philosophy
 
@@ -87,31 +124,45 @@ Fluency can give the user an illusory sense of mastery, but storage strength is 
 
 ## Lessons
 
-A lesson is the main thing you produce — the unit in which knowledge and skills reach the user. Each lesson is one self-contained HTML file, saved to `./lessons/` and titled `0001-<dash-case-name>.html` where the number increments each time.
+A lesson is the main thing you produce — the unit in which knowledge and skills reach the user. Each lesson is one tightly-scoped piece of content, tied to a numbered slot (`0001-<dash-case-name>`, incrementing each time) that becomes `./site/lessons/0001-<dash-case-name>.html` once [built](#building-the-site). Draft the lesson's content yourself — explanation, citations, quiz, exercise, and the specific links it needs out to other lessons, the glossary, and reference docs — but never hand-author the HTML: that's `varde-docs`'s job, and only after the **full** batch's content is drafted.
 
-Once the mission is confirmed, plan and generate the **full set** of lessons its Focus needs in a single pass — see [Zone Of Proximal Development](#zone-of-proximal-development) for how to plan and sequence that set. Don't generate one lesson and stop to wait for the user to ask for the next one; the user should come back to a finished, ordered course.
+Once the mission is confirmed, plan and draft the **full set** of lessons its Focus needs in a single pass — see [Zone Of Proximal Development](#zone-of-proximal-development) for how to plan and sequence that set. Don't draft one lesson and stop to wait for the user to ask for the next one; the user should come back to a finished, ordered, fully linked course.
 
-A lesson should be **beautiful** — clean, readable typography and layout — since the user will return to these later to review. Think Tufte.
+A lesson should be **beautiful** — clean, readable typography and layout — since the user will return to these later to review. Think Tufte. This is `varde-docs`'s responsibility to deliver, using Varde's design system — see [Building the Site](#building-the-site).
 
 The lesson should be short, and completable very quickly. Learners' working memory is very small, and we need to stay within it. But each lesson should give the user a single tangible win that they can build on. It should be directly tied to the mission, and should be in the user's zone of proximal development.
 
-If possible, open the first lesson file for the user by running a CLI command once the full set is generated.
+If possible, open the first lesson file (`./site/lessons/0001-<dash-case-name>.html`) for the user by running a CLI command once the site is built.
 
-Each lesson should link via HTML anchors to other lessons and reference documents — including `MISSION.html` and `GLOSSARY.html` (see [Rendering Mission and Glossary](#rendering-mission-and-glossary)), never their `.md` sources.
+Each lesson needs real links to other lessons, `index.html` (Mission), and `glossary.html` (with anchors to specific terms where useful) — never to the `.md` sources. Specify these links as part of the lesson content you hand to `varde-docs` (see [Building the Site](#building-the-site)) — they're your decision, computed during [sequencing](#zone-of-proximal-development), not something `varde-docs` invents.
 
 Each lesson's practice step should send the user back to the real thing to read themselves — the actual diff hunk, file, or commit this PR touched — rather than a paraphrase of the code. The lesson provides scaffolding (what to look for, the glossary terms, the question to answer) and a recommended primary source beyond the PR itself; it should never substitute for reading the PR. The goal is a foundation for understanding this PR's contents without leaning on the assistant, not a summary to consume instead of the code.
 
 Each lesson should contain a reminder to ask followup questions to the agent. The agent is their teacher, and can assist with anything that's unclear.
 
-## Rendering Mission and Glossary
+## Building the Site
 
-`MISSION.md` and `GLOSSARY.md` are the editable sources of truth, but a lesson is a polished HTML document — linking out to raw markdown breaks that experience. Whenever either file is created or edited, regenerate its HTML counterpart, `MISSION.html` and `GLOSSARY.html`, at the workspace root, built from the same shared stylesheet and components in `./assets/` that the lessons use (see [Assets](#assets)), so they read as part of the same course rather than a plain document dump. Lessons and learning records should link to `MISSION.html` / `GLOSSARY.html` (with anchors to specific terms where useful) — never to the `.md` originals.
+`MISSION.md`, `GLOSSARY.md`, and each lesson's drafted content are editable sources of truth — but the user reads a polished, linked site, not raw markdown. That site is always built by invoking the sibling **`varde-docs`** skill; never hand-author any HTML yourself.
+
+Invoke it once per full batch — after the mission is confirmed, the glossary is drafted, and every lesson in the ordered [ZPD](#zone-of-proximal-development) batch has its content drafted. Never invoke it per-lesson or mid-draft. On drift, invoke it again with the complete accumulated lesson set — see [Detecting Drift](#detecting-drift).
+
+Since `varde-docs` takes free-form instructions rather than a fixed schema, the request you hand it must spell out, explicitly:
+
+- **Output path**: `.teach-pr/<pr-number-or-branch>/site/` (resolved per [Resolving Paths](#resolving-paths)), overwriting `index.html`, `glossary.html`, and everything under `lessons/` and `reference/` — but never touching `./site/assets/` (see [Assets](#assets)).
+- **Exact filenames, given verbatim** — `index.html` for the rendered Mission, `glossary.html` for the rendered Glossary, `lessons/0001-<dash-case-name>.html` etc. for each lesson in teaching order. Don't let `varde-docs` invent kebab-case names from titles; the numeric prefixes encode teaching order and are referenced by learning records and other workspaces, so they must be preserved byte-for-byte.
+- **A sidebar with exactly two sections, in this order**:
+  1. **"Lessons"** — one item per lesson, in teaching order, link text = lesson title, linking to `lessons/000N-<dash-case-name>.html`.
+  2. **"Glossary / Mission"** — exactly two items: "Mission" → `index.html`, "Glossary" → `glossary.html`.
+  - No third section. Reference pages exist under `reference/` but are deliberately excluded from the sidebar — link to them only inline, from the lesson content that cites them.
+- **The content itself** — the Mission, the Glossary, and every lesson's drafted content (including the specific links each lesson needs out to other lessons, glossary terms, and reference pages) — passed through for rendering, not invented by `varde-docs`.
+
+This makes "generate all lessons and have them linked together" an enforceable data flow: you compute the full lesson set and its required links during [sequencing](#zone-of-proximal-development); `varde-docs` is only responsible for rendering them as real, working links inside one shared shell.
 
 ## Reusing Prior Lessons
 
-Before planning which lessons to generate, check whether a topic has already been taught — not only in this workspace, but in any sibling workspace under `.teach-pr/` (other PRs or branches the user has learned from before). Scan other workspaces' `GLOSSARY.md` terms and `./lessons/*.html` titles for overlap with what this mission's Focus requires.
+Before planning which lessons to generate, check whether a topic has already been taught — not only in this workspace, but in any sibling workspace under `.teach-pr/` (other PRs or branches the user has learned from before). Scan other workspaces' `GLOSSARY.md` terms and `./site/lessons/*.html` titles for overlap with what this mission's Focus requires.
 
-- If a topic was already covered elsewhere, don't regenerate a lesson for it — link to the existing lesson instead (a relative link across workspaces, e.g. `../../<other-pr-or-branch>/lessons/0003-foo.html`), and treat it as already satisfied when sequencing the new batch in [Zone Of Proximal Development](#zone-of-proximal-development).
+- If a topic was already covered elsewhere, don't regenerate a lesson for it — link to the existing lesson instead (a relative link across workspaces, e.g. `../../<other-pr-or-branch>/site/lessons/0003-foo.html`), and treat it as already satisfied when sequencing the new batch in [Zone Of Proximal Development](#zone-of-proximal-development).
 - If the existing lesson only partially covers what this mission needs, write a short new lesson for the gap that links back to the original for the shared foundation, rather than re-explaining it from scratch.
 - Still add the term to this workspace's `GLOSSARY.md` — it's canonical for this PR too — but note next to it that it's covered in depth elsewhere, with a link.
 - Note the reuse in `NOTES.md` so a future session understands why a topic has no numbered lesson of its own here.
@@ -119,11 +170,9 @@ Before planning which lessons to generate, check whether a topic has already bee
 
 ## Assets
 
-Lessons are built from reusable **components**, stored in `./assets/`: stylesheets, quiz widgets, simulators, diagram helpers — anything a second lesson could reuse.
+Visual design is no longer this skill's responsibility — `varde-docs` renders every page from Varde's own stylesheet, so lessons look like one consistent course without a hand-built stylesheet. `./site/assets/` exists only for **interactive behavior** that HTML alone can't provide, and is the one part of `./site/` that [building the site](#building-the-site) must never overwrite.
 
-Reuse is the default, not the exception. Before authoring a lesson, read `./assets/` and build from the components already there. When a lesson needs something new and reusable, write it as a component in `./assets/` and link to it — never inline code a future lesson would duplicate.
-
-A shared stylesheet is the first component every workspace earns: every lesson links it, so the lessons look like one consistent course rather than a pile of one-offs. As the workspace grows, so should the component library.
+Prefer native, zero-JS HTML first: a `<details><summary>` reveal-answer block, or Varde's `.checkbox`/radio inputs paired with a reveal, covers most quiz interactions without any script at all. Only write a `<script>` when a genuine interactive simulator can't be expressed natively — scope it to that one lesson if it's a one-off, or to a shared file in `./site/assets/` (e.g. `quiz.js`) if reused across 2+ lessons. Before authoring anything new, read `./site/assets/` and reuse what's already there rather than duplicating it.
 
 ## Zone Of Proximal Development
 
@@ -132,7 +181,7 @@ Each lesson, the user should always feel as if they are being challenged 'just e
 Plan that sequence by:
 
 - Reading their `learning-records` to establish what's already known — don't re-teach it, and don't let it break the [reuse check](#reusing-prior-lessons) either
-- Breaking the mission's Focus into the full list of distinct things that need teaching, based on what the diff actually exercises
+- Breaking the mission's Focus into the full list of distinct things that need teaching, based on what the diff actually exercises — each candidate must pass the [two-question test](#the-two-question-test) before being added to the list
 - Checking that list against [prior lessons](#reusing-prior-lessons) elsewhere under `.teach-pr/`, dropping or shrinking anything already covered
 - Ordering what's left by dependency and difficulty, not diff order
 - Generating a lesson for every item in the ordered list before stopping
@@ -172,7 +221,7 @@ You should attempt to find high-reputation communities the user can join. If the
 
 ## Reference Documents
 
-While creating lessons, you should also create reference documents. Lessons can reference these documents - they are useful for tracking raw units of knowledge useful across lessons.
+While drafting lessons, you should also draft reference documents, rendered by `varde-docs` to `./site/reference/*.html` alongside the lessons (see [Building the Site](#building-the-site)). Lessons can reference these documents - they are useful for tracking raw units of knowledge useful across lessons. They share the same shell and typography as lessons, but are deliberately left out of the sidebar — reach them only via an inline link from the lesson that cites them.
 
 Lessons will rarely be revisited later - reference documents will be. They should be the compressed essence of the lesson, in a format designed for quick reference.
 
