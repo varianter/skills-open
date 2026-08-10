@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "variant-skills-temp": {
+      "source": {
+        "source": "directory",
+        "path": "."
+      }
+    }
+  },
+  "enabledPlugins": {
+    "code@variant-skills-temp": true
+  }
+}
