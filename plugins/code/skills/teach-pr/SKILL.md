@@ -31,8 +31,8 @@ Treat `./.teach-pr/<pr-number-or-branch>/`, resolved against the root of the rep
 
 The state of their learning is captured in this directory in several files:
 
-- `MISSION.md`: A document capturing _what this PR changes and why it's worth learning_. Auto-drafted from the diff and PR metadata (see [The Mission](#the-mission)), then confirmed with the user. Use the format in [MISSION-FORMAT.md](./MISSION-FORMAT.md).
-- `GLOSSARY.md`: The canonical terms for this PR's subject matter, adhered to in every lesson and learning record. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
+- `MISSION.md`: A document capturing _what this PR changes and why it's worth learning_. Auto-drafted from the diff and PR metadata (see [The Mission](#the-mission)), then confirmed with the user. Use the format in [MISSION-FORMAT.md](./MISSION-FORMAT.md). Every time it's created or edited, regenerate `MISSION.html` — see [Rendering Mission and Glossary](#rendering-mission-and-glossary) — since that's what lessons link to.
+- `GLOSSARY.md`: The canonical terms for this PR's subject matter, adhered to in every lesson and learning record. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md). Every time it's created or edited, regenerate `GLOSSARY.html` — see [Rendering Mission and Glossary](#rendering-mission-and-glossary) — since that's what lessons link to.
 - `./reference/*.html`: A directory of reference materials. These are the compressed learnings from the lessons - cheat sheets, reference algorithms, syntax. They are the raw units of learning. They should be beautiful documents which print out well, and are designed for quick reference.
 - `RESOURCES.md`: A list of resources which can be explored to ground your teaching in contextual knowledge, or to acquire knowledge and wisdom. Use the format in [RESOURCES-FORMAT.md](./RESOURCES-FORMAT.md).
 - `./learning-records/*.md`: A directory of learning records, which capture what the user has learned. These are loosely equivalent to architectural decision records in software development - they capture non-obvious lessons and key insights that may need to be revised later, or drive future sessions. These should be used to calculate the zone of proximal development. They are titled `0001-<dash-case-name>.md`, where the number increments each time. Use the format in [LEARNING-RECORD-FORMAT.md](./LEARNING-RECORD-FORMAT.md).
@@ -58,7 +58,7 @@ Missions may change as the user develops more skills and knowledge, or as the PR
 
 ## Detecting Drift
 
-Record the commit SHA (or commit range) you diffed against in `NOTES.md`. At the start of a later session, re-check it against the PR/branch's current state. If there are new commits since that SHA, tell the user and offer to extend the mission and add lessons for the new delta — don't silently keep teaching from a diff that's now stale.
+Record the commit SHA (or commit range) you diffed against in `NOTES.md`. At the start of a later session, re-check it against the PR/branch's current state. If there are new commits since that SHA, tell the user and offer to extend the mission and add lessons for the new delta — don't silently keep teaching from a diff that's now stale. Generate every lesson the delta needs in one pass, the same way as [initial lesson generation](#lessons), and check the delta's topics against [prior lessons](#reusing-prior-lessons) before writing anything new.
 
 ## Philosophy
 
@@ -68,7 +68,7 @@ To learn at a deep level, the user needs three things:
 - **Skills**, acquired through highly-relevant interactive lessons devised by you, based on the knowledge
 - **Wisdom**, which comes from interacting with other learners and practitioners
 
-Before the `RESOURCES.md` is well-populated, your focus should be to find high-quality resources which will help the user acquire knowledge. Never trust your parametric knowledge.
+For every topic you're about to teach, actively search for a deep-dive resource on that specific mechanism from a credited, high-quality source — official documentation, a maintainer's or framework author's own writing, or a well-known blog with a strong reputation in the field. Do this before writing the lesson, every time, not just while `RESOURCES.md` is thin. Add what you find to `RESOURCES.md`. Never trust your parametric knowledge alone, and never settle for a shallow intro-level article when a deep-dive exists.
 
 Some topics may require more skills than knowledge. A PR introducing a new algorithm might be more knowledge-based. A PR restructuring a build pipeline might be more skills-based.
 
@@ -89,17 +89,33 @@ Fluency can give the user an illusory sense of mastery, but storage strength is 
 
 A lesson is the main thing you produce — the unit in which knowledge and skills reach the user. Each lesson is one self-contained HTML file, saved to `./lessons/` and titled `0001-<dash-case-name>.html` where the number increments each time.
 
+Once the mission is confirmed, plan and generate the **full set** of lessons its Focus needs in a single pass — see [Zone Of Proximal Development](#zone-of-proximal-development) for how to plan and sequence that set. Don't generate one lesson and stop to wait for the user to ask for the next one; the user should come back to a finished, ordered course.
+
 A lesson should be **beautiful** — clean, readable typography and layout — since the user will return to these later to review. Think Tufte.
 
 The lesson should be short, and completable very quickly. Learners' working memory is very small, and we need to stay within it. But each lesson should give the user a single tangible win that they can build on. It should be directly tied to the mission, and should be in the user's zone of proximal development.
 
-If possible, open the lesson file for the user by running a CLI command.
+If possible, open the first lesson file for the user by running a CLI command once the full set is generated.
 
-Each lesson should link via HTML anchors to other lessons and reference documents.
+Each lesson should link via HTML anchors to other lessons and reference documents — including `MISSION.html` and `GLOSSARY.html` (see [Rendering Mission and Glossary](#rendering-mission-and-glossary)), never their `.md` sources.
 
 Each lesson's practice step should send the user back to the real thing to read themselves — the actual diff hunk, file, or commit this PR touched — rather than a paraphrase of the code. The lesson provides scaffolding (what to look for, the glossary terms, the question to answer) and a recommended primary source beyond the PR itself; it should never substitute for reading the PR. The goal is a foundation for understanding this PR's contents without leaning on the assistant, not a summary to consume instead of the code.
 
 Each lesson should contain a reminder to ask followup questions to the agent. The agent is their teacher, and can assist with anything that's unclear.
+
+## Rendering Mission and Glossary
+
+`MISSION.md` and `GLOSSARY.md` are the editable sources of truth, but a lesson is a polished HTML document — linking out to raw markdown breaks that experience. Whenever either file is created or edited, regenerate its HTML counterpart, `MISSION.html` and `GLOSSARY.html`, at the workspace root, built from the same shared stylesheet and components in `./assets/` that the lessons use (see [Assets](#assets)), so they read as part of the same course rather than a plain document dump. Lessons and learning records should link to `MISSION.html` / `GLOSSARY.html` (with anchors to specific terms where useful) — never to the `.md` originals.
+
+## Reusing Prior Lessons
+
+Before planning which lessons to generate, check whether a topic has already been taught — not only in this workspace, but in any sibling workspace under `.teach-pr/` (other PRs or branches the user has learned from before). Scan other workspaces' `GLOSSARY.md` terms and `./lessons/*.html` titles for overlap with what this mission's Focus requires.
+
+- If a topic was already covered elsewhere, don't regenerate a lesson for it — link to the existing lesson instead (a relative link across workspaces, e.g. `../../<other-pr-or-branch>/lessons/0003-foo.html`), and treat it as already satisfied when sequencing the new batch in [Zone Of Proximal Development](#zone-of-proximal-development).
+- If the existing lesson only partially covers what this mission needs, write a short new lesson for the gap that links back to the original for the shared foundation, rather than re-explaining it from scratch.
+- Still add the term to this workspace's `GLOSSARY.md` — it's canonical for this PR too — but note next to it that it's covered in depth elsewhere, with a link.
+- Note the reuse in `NOTES.md` so a future session understands why a topic has no numbered lesson of its own here.
+- This follows directly from [What Counts As A Topic](#what-counts-as-a-topic): topics are mechanisms, so the same mechanism reappearing in a different PR is genuinely the same topic, not a new one that needs re-teaching.
 
 ## Assets
 
@@ -111,19 +127,23 @@ A shared stylesheet is the first component every workspace earns: every lesson l
 
 ## Zone Of Proximal Development
 
-Each lesson, the user should always feel as if they are being challenged 'just enough'.
+Each lesson, the user should always feel as if they are being challenged 'just enough'. This applies across the whole batch, not lesson-by-lesson: plan the entire set the mission's Focus needs before generating any of it, and sequence that set from foundational to advanced so each lesson's prerequisites are covered by the ones before it.
 
-The user may specify an exact thing they want to learn about the PR. If they don't, figure out their zone of proximal development by:
+Plan that sequence by:
 
-- Reading their `learning-records`
-- Figuring out the right thing to teach them based on the mission and what remains unexplored in the diff
-- Teach the most relevant thing that fits in their zone of proximal development
+- Reading their `learning-records` to establish what's already known — don't re-teach it, and don't let it break the [reuse check](#reusing-prior-lessons) either
+- Breaking the mission's Focus into the full list of distinct things that need teaching, based on what the diff actually exercises
+- Checking that list against [prior lessons](#reusing-prior-lessons) elsewhere under `.teach-pr/`, dropping or shrinking anything already covered
+- Ordering what's left by dependency and difficulty, not diff order
+- Generating a lesson for every item in the ordered list before stopping
+
+If the user specifies an exact thing they want to learn about the PR, apply the same process scoped to that thing — it may still expand into more than one lesson, and all of them should be generated together.
 
 ## Knowledge
 
 Lessons should be designed around a skill the user is going to learn. The knowledge in the lesson should be only what's required to acquire that skill. You teach the knowledge first, then get the user to practice the skills via an interactive feedback loop.
 
-Knowledge should first be gathered from trusted resources. Use `RESOURCES.md` to keep track of them. Lessons should be littered with citations - links to external resources, and to the specific files/commits/comments in the PR, to back up any claim made. This increases the trustworthiness of the lesson.
+Knowledge should first be gathered from trusted resources: before writing a lesson, search for a deep-dive resource on its topic from a credited, high-quality source (see [Philosophy](#philosophy)) and record it in `RESOURCES.md`. Prefer sources that go deep on the specific mechanism — official docs, architecture guides, a maintainer's own writing — over shallow tutorials or listicles. Lessons should be littered with citations - links to external resources, and to the specific files/commits/comments in the PR, to back up any claim made. This increases the trustworthiness of the lesson.
 
 For acquiring knowledge, difficulty is the enemy. It eats working memory you need for understanding.
 

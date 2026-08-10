@@ -26,7 +26,7 @@
 
 - **The PR itself is a resource.** List the diff, key commits, and any linked issue or design doc under Knowledge alongside external sources — it's the primary source this whole workspace exists to help the user read.
 - **Sources deep-dive the mechanism, not the domain.** For a topic like `AuthorizationPolicy`, look for the framework's own docs on how that mechanism works internally — not articles about access-control theory in general. See [What Counts As A Topic](./SKILL.md#what-counts-as-a-topic).
-- **High-trust only.** Prefer primary sources, recognised experts, peer-reviewed work, and communities with strong moderation. If a resource is marketing dressed as education, leave it out.
+- **High-trust and deep-dive, not just high-trust.** Prefer primary sources, recognised experts, peer-reviewed work, and communities with strong moderation — and among those, prefer the ones that go deep on the specific mechanism (official docs, architecture guides, a maintainer's own writing) over shallow intros or listicles. If a resource is marketing dressed as education, leave it out. Do this search for every topic before writing its lesson, not only while this file is thin.
 - **Annotate every entry.** A bare link is useless in three months. Add one line: what it covers and when to reach for it.
 - **Group by Knowledge / Wisdom.** Mirrors the philosophy in [SKILL.md](./SKILL.md). It is fine for a resource to appear in only one group.
 - **Surface gaps explicitly.** If no good resource exists for an area the mission needs, write a `## Gaps` section listing what is missing. This drives future search.
