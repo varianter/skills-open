@@ -11,7 +11,7 @@
 
 Use skills from plugins in this repo by connecting marketplace to Claude Code:
 
-```
+```sh
 # if not added before
 claude plugins marketplace add varianter/skills-open
 
@@ -27,7 +27,7 @@ claude
 
 Or adding the skills directly:
 
-```
+```sh
 npx skills add varianter/skills-open
 
 # list all
